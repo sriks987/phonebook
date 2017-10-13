@@ -1,16 +1,9 @@
-/*Phonebook using an Nary tree 
-  
-  Project (SEMESTER 3)
-  
-  Done by: Shreyas Sridhar        01FB16ECS372   
-           Shubham Mathur         01FB16ECS379
-           Srikumar Subramanian   01FB16ECS396
-           Raj Subramanian        01FB16ECS424
-*/
+//phonebook code
 
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #define SIZE 20
 
 typedef struct node node;
@@ -27,54 +20,59 @@ struct book
 };
 typedef struct book book;
 
-void menu()                                        // menu to choose from various actions 
-void create_book(book *ph)                         // to create a new phone book 
+void menu();                                        // menu to choose from various actions
+void create_book(book *ph);                         // to create a new phone book
 void create_node(node *temp);                      // to create a new node in the tree
 void create_num(float *temp,float num);            // to insert the phone number after the location has been found
-void insert(int num,char *name,book *ph);          // to insert a new phone number given the name and the person's number
-void search(char *name);                           // to search for the number given the name of the person
-void initialize(book *ph, char *file);             // to initialize the tree
+void insert(float num,char *name,book *ph);          // to insert a new phone number given the name and the person's number
+void search(char *name, book*ph);                           // to search for the number given the name of the person
+void initialize(book *ph, char *file);
+         // to initialize the tree
 void main()
 {
- menu(); 
+ menu();
 }
 
 void menu()
 {
+ int r; char file[SIZE];
  printf("Welcome to the phone book\n");
  book phone;
  create_book(&phone);
  char decision,name[SIZE];
  float num;
  do
- {   
+ {
    if (r==2)
        printf("\n\n1. Search for a number\n2. Provide phonebook data through file\n3. Provide new record\n4. Exit\n\n");
    r=0;
    scanf("%c",&decision);
    switch(decision)
    {
-     case '1':input();
+     case '1':search(name, &phone);
               r=2;
+              printf("Enter the name: ");
+              scanf("%s",name);
               break;
      case '2':printf("Enter the filename: ");
               scanf("%s",file);
-              initialize(file);
+              initialize(&phone, file);
               r=2;
               break;
      case '3':printf("Enter the person's name: ");
               scanf("%s",name);
-              printf("Enter the number: "); 
+              name[SIZE]= toUpper(name);
+              printf("Enter the number: ");
               scanf("%s",&num);
               insert(num,name,&phone);
               r=2;
-              break; 
+              break;
      case '4':r=1;
               break;
    }
   }while(r==0 || r==2);
-} 
- 
+}
+
 
 void create_book(book *ph)
 {
@@ -83,9 +81,9 @@ void create_book(book *ph)
 
 void create_node(node *temp)
 {
- temp = (node*)malloc(sizeof(node));
  temp->data = NULL;
- for(int i=0;i<27;i++)
+ int i;
+ for(i=0;i<27;i++)
   temp->a[i]=NULL;
 }
 
@@ -98,7 +96,8 @@ void create_num(float *temp,float num)
 void insert(float num,char *name,book *ph)
 {
  node *temp = ph->root;
- for(int i=0;name[i]!='\0';i++)
+ int i;
+ for(i=0;name[i]!='\0';i++)
  {
    if (name[i]!=32)
    {
@@ -121,10 +120,11 @@ void insert(float num,char *name,book *ph)
  create_num(temp->data,num);
 }
 
-void search(char *name)
+void search(char *name, book* ph)
 {
  node *temp = ph->root;
- for(int i=0;name[i]!='\0';i++)
+ int i;
+ for(i=0;name[i]!='\0';i++)
  {
   if (name[i]!=32)
   {
@@ -133,20 +133,20 @@ void search(char *name)
         printf("Number does not exist");
         return;
     }
-    else 
+    else
         temp = temp->a[name[i]%65];
   }
   else if (name[i]==32)
   {
     if (temp->a[26]==NULL)
-    {   
+    {
         printf("Number does not exist");
         return;
     }
-    else 
+    else
         temp = temp->a[26];
   }
-  else 
+  else
   {
     printf("Number does not exist");
     return;
@@ -155,7 +155,7 @@ void search(char *name)
  printf("The number is : %f",*(temp->data));
 }
 
-void initialize(book *ph, char *file) 
+void initialize(book *ph, char *file)
 {
  FILE *fptr;
  if ((fptr=fopen(file,"r")) == NULL)
@@ -165,13 +165,15 @@ void initialize(book *ph, char *file)
  }
  char name[SIZE],num[SIZE],buffer[50];
  while(feof(fptr)==0)
- { 
-   i=0;
+ {
+   int i=0;
    if (fgets(buffer,128,fptr) == NULL)            //breaks out of the loop if the file ends
        break;
-   name = strtok(buffer,",");
-   num = strtok(NULL,",");
+   name[SIZE]= toUpper(name);
+   name[SIZE] = strtok(buffer,",");
+   num[SIZE] = strtok(NULL,",");
    insert(atof(num),name,ph);
- }                           
+ }
 }
-     
+
+
