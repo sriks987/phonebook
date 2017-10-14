@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 #define SIZE 20
 
 typedef struct node node;
@@ -35,7 +36,7 @@ void main()
 
 void menu()
 {
- int r; char file[SIZE];
+ int r = 2; char file[SIZE];
  printf("Welcome to the phone book\n");
  book phone;
  create_book(&phone);
@@ -45,7 +46,7 @@ void menu()
  {
    if (r==2)
        printf("\n\n1. Search for a number\n2. Provide phonebook data through file\n3. Provide new record\n4. Exit\n\n");
-   r=0;
+   
    scanf("%c",&decision);
    switch(decision)
    {
@@ -61,7 +62,8 @@ void menu()
               break;
      case '3':printf("Enter the person's name: ");
               scanf("%s",name);
-              name[SIZE]= toUpper(name);
+
+              name[SIZE]= toupper(name);
               printf("Enter the number: ");
               scanf("%s",&num);
               insert(num,name,&phone);
@@ -164,14 +166,20 @@ void initialize(book *ph, char *file)
     exit (-1);
  }
  char name[SIZE],num[SIZE],buffer[50];
+ char UpperCaseName[SIZE];
  while(feof(fptr)==0)
  {
    int i=0;
    if (fgets(buffer,128,fptr) == NULL)            //breaks out of the loop if the file ends
        break;
-   name[SIZE]= toUpper(name);
-   name[SIZE] = strtok(buffer,",");
+   int j=0;
+   strcpy(name,strtok(buffer,",")); // copies the name from file to variable
    num[SIZE] = strtok(NULL,",");
+   while(name[j]!='\0')
+   {
+       UpperCaseName[j] = toupper(name[j]); // converting it to uppercase
+   }
+   
    insert(atof(num),name,ph);
  }
 }
