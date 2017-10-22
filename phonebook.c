@@ -36,12 +36,12 @@ void main()
 
 void menu()
 {
- int r = 0; char file[SIZE];
- printf("Welcome to the phone book\n");
+ int r = 0;
+ char decision,name[SIZE],file[SIZE];
+ float num;
  book phone;
  create_book(&phone);
- char decision,name[SIZE];
- float num;
+ printf("Welcome to the phone book\n");
  do
  {
    if (r==2){
@@ -166,25 +166,24 @@ void search(char *name, book* ph)
 void initialize(book *ph, char *file)
 {
  FILE *fptr;
+ int j=0;
+ char name[SIZE],num[SIZE],buffer[50];
  if ((fptr=fopen(file,"r")) == NULL)
  {
     fprintf (stderr, "can't open %s\n", file);
-    exit (-1);
+    return;
  }
- char name[SIZE],num[SIZE],buffer[50];
- char UpperCaseName[SIZE];
- while(feof(fptr)==0)
+ while(feof(fptr)==1)
  {
-   int i=0;
-   if (fgets(buffer,128,fptr) == NULL)           // breaks out of the loop if the file ends
-       break;
-   int j=0;
+   if (fgets(buffer,128,fptr)== NULL)            // breaks out of the loop if the file ends
+        break;
    strcpy(name,strtok(buffer,","));              // copies the name from file to variable
-   num[SIZE] = strtok(NULL,",");
+   strcpy(num,strtok(NULL,","));
    for(int i=0;name[i]!='\0';i++)
         name[i] = toupper(name[i]);   
    insert(atof(num),name,ph);
  }
+ 
 }
 
 
