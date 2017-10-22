@@ -21,14 +21,14 @@ struct book
 };
 typedef struct book book;
 
-void menu();                                        // menu to choose from various actions
-void create_book(book *ph);                         // to create a new phone book
+void menu();                                       // menu to choose from various actions
+void create_book(book *ph);                        // to create a new phone book
 void create_node(node *temp);                      // to create a new node in the tree
 void create_num(float *temp,float num);            // to insert the phone number after the location has been found
-void insert(float num,char *name,book *ph);          // to insert a new phone number given the name and the person's number
-void search(char *name, book*ph);                           // to search for the number given the name of the person
-void initialize(book *ph, char *file);
-         // to initialize the tree
+void insert(float num,char *name,book *ph);        // to insert a new phone number given the name and the person's number
+void search(char *name, book*ph);                  // to search for the number given the name of the person
+void initialize(book *ph, char *file);             // to initialize the tree
+
 void main()
 {
  menu();
@@ -36,7 +36,7 @@ void main()
 
 void menu()
 {
- int r = 2; char file[SIZE];
+ int r = 0; char file[SIZE];
  printf("Welcome to the phone book\n");
  book phone;
  create_book(&phone);
@@ -44,31 +44,37 @@ void menu()
  float num;
  do
  {
-   if (r==2)
+   if (r==2){
        printf("\n\n1. Search for a number\n2. Provide phonebook data through file\n3. Provide new record\n4. Exit\n\n");
-   
+       r=0;
+   }
    scanf("%c",&decision);
    switch(decision)
    {
-     case '1':search(name, &phone);
-              r=2;
-              printf("Enter the name: ");
+     case '1':printf("Enter the name: ");
               scanf("%s",name);
+              for(int i=0;name[i]!='\0';i++)
+                  name[i] = toupper(name[i]);   
+              search(name, &phone);
+              r=2;
               break;
+
      case '2':printf("Enter the filename: ");
               scanf("%s",file);
               initialize(&phone, file);
               r=2;
               break;
+
      case '3':printf("Enter the person's name: ");
               scanf("%s",name);
-
-              name[SIZE]= toupper(name);
               printf("Enter the number: ");
-              scanf("%s",&num);
+              scanf("%f",&num);
+              for(int i=0;name[i]!='\0';i++)
+                   name[i] = toupper(name[i]);   
               insert(num,name,&phone);
               r=2;
               break;
+
      case '4':r=1;
               break;
    }
@@ -170,16 +176,13 @@ void initialize(book *ph, char *file)
  while(feof(fptr)==0)
  {
    int i=0;
-   if (fgets(buffer,128,fptr) == NULL)            //breaks out of the loop if the file ends
+   if (fgets(buffer,128,fptr) == NULL)           // breaks out of the loop if the file ends
        break;
    int j=0;
-   strcpy(name,strtok(buffer,",")); // copies the name from file to variable
+   strcpy(name,strtok(buffer,","));              // copies the name from file to variable
    num[SIZE] = strtok(NULL,",");
-   while(name[j]!='\0')
-   {
-       UpperCaseName[j] = toupper(name[j]); // converting it to uppercase
-   }
-   
+   for(int i=0;name[i]!='\0';i++)
+        name[i] = toupper(name[i]);   
    insert(atof(num),name,ph);
  }
 }
