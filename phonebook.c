@@ -23,8 +23,8 @@ typedef struct book book;
 
 void menu();                                       // menu to choose from various actions
 void create_book(book *ph);                        // to create a new phone book
-void create_node(node *temp);                      // to create a new node in the tree
-void create_num(float *temp,float num);            // to insert the phone number after the location has been found
+void create_node(node **temp);                      // to create a new node in the tree
+void create_num(float **temp,float num);            // to insert the phone number after the location has been found
 void insert(float num,char *name,book *ph);        // to insert a new phone number given the name and the person's number
 void search(char *name, book*ph);                  // to search for the number given the name of the person
 void initialize(book *ph, char *file);             // to initialize the tree
@@ -36,7 +36,7 @@ void main()
 
 void menu()
 {
- int r = 0;
+ int r = 2;
  char decision,name[SIZE],file[SIZE];
  float num;
  book phone;
@@ -84,39 +84,43 @@ void menu()
 
 void create_book(book *ph)
 {
- create_node(ph->root);
+ ph->root = NULL;
+ create_node(&(ph->root));
 }
 
-void create_node(node *temp)
+void create_node(node **temp)
 {
- temp->data = NULL;
- int i;
- for(i=0;i<27;i++)
-  temp->a[i]=NULL;
+ *temp = (node*)malloc(sizeof(node));
+ (*temp)->data = NULL;
+ for(int i=0;i<27;i++)
+ (*temp)->a[i]=NULL;
 }
 
-void create_num(float *temp,float num)
+void create_num(float **temp,float num)
 {
- temp = (float*)malloc(sizeof(float));
- *temp = num;
+ *temp = (float*)malloc(sizeof(float));
+ **temp = num;
 }
 
 void insert(float num,char *name,book *ph)
 {
  node *temp = ph->root;
  int i;
+ printf("%s\n%f\n",name,num);
  for(i=0;name[i]!='\0';i++)
  {
    if (name[i]!=32)
    {
-      if(temp->a[name[i]%65]==NULL)
-        create_node(temp->a[name[i]%65]);
+      if(temp->a[(name[i]%65)]==NULL){
+        printf("null\n");
+        create_node(&(temp->a[name[i]%65]));
+      }
       temp = temp->a[name[i]%65];
    }
    else if(name[i]==32)
    {
       if(temp->a[26]==NULL)
-        create_node(temp->a[26]);
+        create_node(&(temp->a[26]));
       temp = temp->a[26];
    }
    else
@@ -125,7 +129,7 @@ void insert(float num,char *name,book *ph)
      return;
    }
  }
- create_num(temp->data,num);
+ create_num(&(temp->data),num);
 }
 
 void search(char *name, book* ph)
