@@ -112,7 +112,6 @@ void insert(float num,char *name,book *ph)
    if (name[i]!=32)
    {
       if(temp->a[(name[i]%65)]==NULL){
-        printf("null\n");
         create_node(&(temp->a[name[i]%65]));
       }
       temp = temp->a[name[i]%65];
